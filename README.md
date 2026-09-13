@@ -1,16 +1,12 @@
 # Outfitter AI
 
-Two independent frontends for **Outfitter AI**, an AI wardrobe assistant that
-suggests two outfits a day from your wardrobe, the weather and your schedule.
-Each folder is a standalone Next.js app built from one of the original HTML
-prototypes, which are kept untouched in each app's `reference/` folder.
+An AI wardrobe assistant that suggests two outfits a day from your wardrobe,
+the real weather and your schedule. The app lives in `web/`; the original HTML
+prototype it was built from is kept untouched in `web/reference/`.
 
-| Folder | Design | Port | Run |
-|---|---|---|---|
-| `web/` | **Linen** — Familjen Grotesk + Newsreader, indigo weather card, flat-lay outfit cards, dashed care-label tag rows | 3000 | `cd web && npm run dev` |
-| `Gallery/` | **Gallery** — Manrope + Pixelify Sans, paper sheet inset in a grey mat, one full editorial hero per look, right slide-in panels | 3001 | `cd Gallery && npm run dev` |
-
-Both can run at once; each has its own port baked into its `dev` script.
+```bash
+cd web && npm install && npm run dev   # http://localhost:3000
+```
 
 ## Stack
 
@@ -20,21 +16,49 @@ lucide-react · fonts via `next/font/google`.
 
 ## Screens
 
-Both apps implement the same product across real routes: Today, Wardrobe,
-Schedule and Settings, plus item editing and an add-item flow.
+Today, Weather, Wardrobe, Schedule and Settings, plus item editing and an
+add-item flow.
 
-There is no backend. Data is seeded from the prototypes, held in a Zustand store
-and persisted to `localStorage` per app (`outfitter-web-v1`,
-`outfitter-gallery-v1`). Weather and the AI tagging are mocked, exactly as in the
-prototypes.
+## Data
+
+There is no backend and no sign-in yet.
+
+Your wardrobe, schedule and settings are seeded from the prototype, held in a
+Zustand store and persisted to `localStorage` under `outfitter-web-v1`. Outfit
+picks are computed in [picks.ts](web/src/lib/picks.ts) — every piece is scored
+against the temperature, the rain and the dressiest thing on the day, and
+anything still resting is skipped.
+
+The weather is real, fetched on the server and cached. All of it is keyless:
+
+| Source | For |
+|---|---|
+| Open-Meteo | forecast, 15-minute precipitation nowcast, air quality, 30-year normal highs |
+| Open-Meteo geocoding | a typed place name |
+| Nominatim (OSM) | reverse geocoding, when the browser gives coordinates |
+
+The AI tagging in the add-item flow is still mocked, as in the prototype.
+
+## Sky media
+
+The Today and Weather heroes show the sky you actually have: a still from
+`public/sky/`, and over it a short silent clip from `public/sky/video/` — one
+per weather scene, day and night.
+
+Each clip is a palindrome, eight seconds forward and the same eight reversed,
+so it loops without a cut. They were fetched once from Pixabay (the manifest
+with its attribution is [sky-clips.json](web/src/data/sky-clips.json)) and are
+committed, so no key is needed to run the app. Stills are Wikimedia Commons;
+three of them are CC BY-SA and are credited on screen from
+`public/sky/credits.json`.
 
 ## Commands
 
-Inside either folder:
+Inside `web/`:
 
 ```bash
-npm run dev      # development server on that app's port
+npm run dev      # development server on :3000
 npm run build    # production build
+npm run check    # tsc --noEmit && eslint src
 npm run lint     # eslint
-npx tsc --noEmit # type check
 ```
