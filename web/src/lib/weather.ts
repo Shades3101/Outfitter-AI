@@ -24,7 +24,7 @@ export interface Day {
 
 export interface Weather {
   place: string;
-  /** Where the forecast is for, so the radar map can centre on it. */
+  /** Where the forecast is for, so the client store can hold the same spot. */
   coords: { lat: number; lon: number };
   unit: "C" | "F";
   /** Unit words that follow `unit`: metric for Celsius, imperial for Fahrenheit. */
@@ -294,6 +294,11 @@ async function reverse(lat: number, lon: number): Promise<Spot> {
   return spot;
 }
 
+/** A `Place` — a typed name or a pair of coordinates — as a located spot. */
+function spotFor(place: Place): Promise<Spot> {
+  return typeof place === "string" ? forward(place) : reverse(place.lat, place.lon);
+}
+
 /** Look a typed place name up. */
 async function forward(place: string): Promise<Spot> {
   const geo = await get<GeoResponse>(
@@ -405,10 +410,7 @@ export async function getWeather(
     : { wind: "kph", rain: "mm", distance: "km" };
 
   try {
-    const spot =
-      typeof place === "string"
-        ? await forward(place)
-        : await reverse(place.lat, place.lon);
+    const spot = await spotFor(place);
 
     const query =
       `latitude=${spot.latitude}&longitude=${spot.longitude}` +
@@ -570,10 +572,7 @@ export async function getNormalHigh(
   units: Settings["units"]
 ): Promise<number | null> {
   try {
-    const spot =
-      typeof place === "string"
-        ? await forward(place)
-        : await reverse(place.lat, place.lon);
+    const spot = await spotFor(place);
     const year = new Date().getUTCFullYear();
     const data = await get<{
       daily: { time: string[]; temperature_2m_max: (number | null)[] };
@@ -609,27 +608,6 @@ export async function getNormalHigh(
   }
 }
 
-/**
- * The newest radar frame from RainViewer, for the precipitation map. Public
- * and keyless; the index lists a frame every ten minutes.
- */
-export async function getRadarFrame(): Promise<string | null> {
-  try {
-    const data = await get<{
-      host: string;
-      radar: { past: { path: string }[] };
-    }>(
-      "https://api.rainviewer.com/public/weather-maps.json",
-      undefined,
-      // Frames land every ten minutes.
-      600
-    );
-    const last = data.radar.past.at(-1);
-    return last ? `${data.host}${last.path}` : null;
-  } catch {
-    return null;
-  }
-}
 
 /**
  * The place a server page should render: URL parameters when a link carries

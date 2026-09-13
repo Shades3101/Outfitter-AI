@@ -2,6 +2,16 @@ import { NowDot } from "./now-dot";
 import type { LucideIcon } from "lucide-react";
 import { Panel, PanelTitle } from "@/components/ui/panel";
 
+/** The tile's headline figure. Shared so the three that draw their own
+ * panel body can't drift from the rest of the grid. */
+export function TileValue({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mt-2 text-[30px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
+      {children}
+    </p>
+  );
+}
+
 /** The shell every tile in the grid shares. */
 export function MetricTile({
   icon,
@@ -20,9 +30,7 @@ export function MetricTile({
   return (
     <Panel className="flex flex-col px-5 py-4">
       <PanelTitle icon={icon}>{label}</PanelTitle>
-      <p className="mt-2 text-[30px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
-        {value}
-      </p>
+      <TileValue>{value}</TileValue>
       {children}
       {note && (
         <p className="mt-auto pt-3 text-[12.5px] leading-[1.45] text-ink-soft">

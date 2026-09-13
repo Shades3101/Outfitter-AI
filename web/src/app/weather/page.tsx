@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { AutoRefresh } from "@/components/shell/auto-refresh";
 import { HourlyStrip } from "@/components/weather/hourly-strip";
 import { NormalHigh, NormalHighSkeleton } from "@/components/weather/normal-high";
-import { PrecipMap, PrecipMapSkeleton } from "@/components/weather/precip-map";
 import { TenDay } from "@/components/weather/ten-day";
 import { PlaceSync } from "@/components/weather/place-sync";
 import { WeatherHero } from "@/components/weather/weather-hero";
@@ -68,11 +67,6 @@ export default async function WeatherPage(props: PageProps<"/weather">) {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2">
             <AirQuality weather={weather} />
-          </div>
-          <div className="sm:col-span-2 sm:row-span-2">
-            <Suspense fallback={<PrecipMapSkeleton />}>
-              <PrecipMap weather={weather} />
-            </Suspense>
           </div>
           <div className="sm:col-span-2">
             <Wind weather={weather} />

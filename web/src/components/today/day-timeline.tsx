@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { KindIcon } from "@/components/kind-icon";
 import { Panel } from "@/components/ui/panel";
+import { Scroller } from "@/components/ui/scroller";
 import { useOutfitter } from "@/lib/store";
 import { toMinutes } from "@/lib/time";
 
@@ -60,11 +61,11 @@ export function DayTimeline() {
         /* A full day can hold more slots than the card is wide, so the row
            scrolls rather than spilling onto the page. Focusable, or a keyboard
            can't reach the slots that have scrolled out of sight. */
-        <div
+        <Scroller
           tabIndex={0}
           role="group"
           aria-label="Today's schedule"
-          className="-mx-1 overflow-x-auto px-1 pb-1 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="-mx-1 px-1 pb-1 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           <div className="relative flex w-max min-w-full">
             <div
@@ -93,7 +94,7 @@ export function DayTimeline() {
               </motion.div>
             ))}
           </div>
-        </div>
+        </Scroller>
       )}
     </Panel>
   );

@@ -3,6 +3,7 @@ import { iconFor } from "@/lib/weather-codes";
 import { hourLabel } from "@/lib/time";
 import type { Weather } from "@/lib/weather";
 import { Panel } from "@/components/ui/panel";
+import { Scroller } from "@/components/ui/scroller";
 
 /**
  * The next 24 hours, under the day's summary line. Sunrise and sunset are
@@ -50,11 +51,11 @@ export function HourlyStrip({ weather }: { weather: Weather }) {
         {weather.units.wind}.
       </p>
       <div className="border-t border-linen-2 px-2 pt-3">
-        <div
+        <Scroller
           tabIndex={0}
           role="group"
           aria-label="Hourly forecast"
-          className="flex gap-1 overflow-x-auto px-1 pb-1 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="flex gap-1 px-1 pb-1 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           {cells(weather).map((cell) => {
             const Icon =
@@ -108,7 +109,7 @@ export function HourlyStrip({ weather }: { weather: Weather }) {
               </div>
             );
           })}
-        </div>
+        </Scroller>
       </div>
     </Panel>
   );

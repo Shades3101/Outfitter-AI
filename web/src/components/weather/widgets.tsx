@@ -10,8 +10,9 @@ import {
   Umbrella,
   Wind as WindIcon,
 } from "lucide-react";
-import { MetricTile, ScaleBar, SCALE } from "./metric-tile";
+import { MetricTile, ScaleBar, SCALE, TileValue } from "./metric-tile";
 import { Panel, PanelTitle } from "@/components/ui/panel";
+import { toMinutes } from "@/lib/time";
 import type { Weather } from "@/lib/weather";
 
 /** A label/value line, the way the wind and moon widgets list their figures. */
@@ -31,9 +32,7 @@ export function AirQuality({ weather }: { weather: Weather }) {
   return (
     <Panel className="flex flex-col px-5 py-4">
       <PanelTitle icon={WindIcon}>Air quality</PanelTitle>
-      <p className="mt-2 text-[30px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
-        {aqi.value}
-      </p>
+      <TileValue>{aqi.value}</TileValue>
       <p className="mt-1 text-[14px] font-medium">{aqi.label}</p>
       <ScaleBar at={aqi.value / 300} from={SCALE} />
       <p className="mt-3 text-[12.5px] leading-[1.45] text-ink-soft">
@@ -138,11 +137,9 @@ export function Uv({ weather }: { weather: Weather }) {
 /** Sunrise, with the sun's position along the day's arc. */
 export function SunTile({ weather }: { weather: Weather }) {
   const { sun } = weather.metrics;
-  const minutes = (hhmm: string) =>
-    Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
-  const rise = minutes(sun.sunrise);
-  const set = minutes(sun.sunset);
-  const now = minutes(weather.now.time.slice(11, 16));
+  const rise = toMinutes(sun.sunrise);
+  const set = toMinutes(sun.sunset);
+  const now = toMinutes(weather.now.time.slice(11, 16));
   const progress = Math.min(Math.max((now - rise) / (set - rise), 0), 1);
   const angle = Math.PI * progress;
 
@@ -384,10 +381,10 @@ export function Averages({
   return (
     <Panel className="flex flex-col px-5 py-4">
       <PanelTitle icon={TrendingUp}>Averages</PanelTitle>
-      <p className="mt-2 text-[30px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
+      <TileValue>
         {delta >= 0 ? "+" : "−"}
         {Math.abs(delta)}°
-      </p>
+      </TileValue>
       <p className="mt-1 text-[14px] leading-[1.25] font-medium">
         {delta === 0 ? "average daily high" : delta > 0 ? "above average" : "below average"}
         <br />
