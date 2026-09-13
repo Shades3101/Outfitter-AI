@@ -1,0 +1,13 @@
+# Unanchored, so nested copies are caught too — a stray web/web/.next exists.
+node_modules/
+.next/
+out/
+.vercel/
+
+# Secrets: web/.env carries the Pixabay key.
+.env
+.env.*
+
+.DS_Store
+*.tsbuildinfo
+*.log

@@ -1,0 +1,160 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ---------------------------------------------------------------
+   Outfitter AI — "Linen" theme
+   Palette ported from reference/closet-web.html
+   --------------------------------------------------------------- */
+
+:root {
+  /* design palette */
+  --linen: #e7e5dc;
+  --linen-2: #dbd8ce;
+  --paper: #f6f5f1;
+  --ink: #20262b;
+  --ink-soft: #5a6167;
+  --indigo: #33456b;
+  --sage: #6f7f62;
+  --ochre: #b8862f;
+  /* The same accent dark enough for body text: #b8862f was 2.96:1 on paper. */
+  --ochre-ink: #8a6317;
+  --stitch: rgba(32, 38, 43, 0.26);
+
+  /* shadcn semantic tokens */
+  --background: var(--linen);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--linen-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--linen-2);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--linen-2);
+  --accent-foreground: var(--ink);
+  --destructive: #a8552f;
+  --border: var(--stitch);
+  --input: var(--stitch);
+  --ring: var(--indigo);
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* design tokens exposed as utilities */
+  --color-linen: var(--linen);
+  --color-linen-2: var(--linen-2);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-indigo: var(--indigo);
+  --color-sage: var(--sage);
+  --color-ochre: var(--ochre);
+  --color-ochre-ink: var(--ochre-ink);
+  --color-stitch: var(--stitch);
+
+  --font-sans: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-heading: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+  }
+  p {
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* The painted sky stays; only its motion stops. */
+  .wx-glow {
+    animation: none !important;
+  }
+}
+
+/* Route enter animation. Deliberately CSS, not JS: a JS-driven fade would
+   render the page at opacity 0 until hydration finishes. */
+/* No transform here: /weather's full-page sky is `position: fixed`, and an
+   animated transform on an ancestor would become its containing block. */
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Weather scene (components/today/weather-scene.tsx)
+   Only the sun's bloom is CSS; clouds, rain, snow, stars and lightning
+   are drawn by weather-canvas.tsx, which does not mount at all when the
+   viewer prefers reduced motion.
+   --------------------------------------------------------------- */
+
+.wx-glow {
+  animation: wx-glow 11s ease-in-out infinite;
+}
+@keyframes wx-glow {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 0.92;
+  }
+  50% {
+    scale: 1.06;
+    opacity: 1;
+  }
+}
